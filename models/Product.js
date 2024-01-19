@@ -5,6 +5,8 @@ const ProductSchema = new mongoose.Schema({
   price: { type: Number, require: true },
   description: { type: String, require: true },
   allergens: { type: String, require: true },
+  vegan: { type: Boolean, default: false },
+  glutenFree: { type: Boolean, default: false },
   ingredients: { type: String, require: true },
   quantity: { type: Number, require: true },
   image: { type: String, require: true },

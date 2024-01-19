@@ -8,6 +8,7 @@ const connectDB = require("./connection");
 connectDB();
 app.use(express.json());
 app.use(cors());
+app.use(express.static("public"));
 
 app.use("/users", require("./controllers/users")); //sets up routing for user-related requests in your Express.js application.
 app.use("/products", require("./controllers/products")); //sets up routing for product-related requests in your Express.js application.
