@@ -7,7 +7,6 @@ IN SERVER:
 3. create .env file => The .env file holds secret information, like database credentials (passwords) or API keys. It allows the app to use these values without exposing them directly in the code.
 
 4. install 6 PACKAGES into package.json as dependencies =>
-
    1. express: to connect to the server => Express is a web application framework for Node.js, designed to make it easier to build web applications and APIs. It offers pre-built functions and structures to handle different aspects of web development.
    2. mongoose: to connect to MongoDB which is our database,
    3. jsonwebtoken: to generate a token for users when login
