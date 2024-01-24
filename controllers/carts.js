@@ -5,32 +5,27 @@ const Product = require("../models/Product");
 const auth = require("../middleware/auth");
 const isAdmin = require("../middleware/isAdmin");
 
-//ADD ITEMS INTO CART 
+//ADD ITEMS INTO CART
 router.post("/", auth, async (req, res) => {
   if (req.user.isAdmin) return res.json({ msg: "Customers only can shop" });
   const { productId, quantity } = req.body; //get the exact property names (productId and quantity) of the cart from the request submitted by user
   const product = await Product.findById(productId); //find the product added by the user by the product's id from the model Product
-  const cart = await Cart.findOne({ user: req.user._id }); //find the user who added cart by the user's personal id
+  const cart = await Cart.findOne({ email: req.user.email }); //find the user who added cart by the user's personal id
 
   try {
-    //if the added quantity from the req.body is more than the available quantity in the database, ALL OF THE SAME PRODUCT
-    if (quantity > product.quantity)
+    if (quantity > product.quantity) {
       return res.json({ msg: "This product has sold out" });
+    }
 
-    //if cart is empty, we're gonna create a new cart for the user to add his first item
     if (!cart) {
       const myCart = await Cart.create({
-        //Cart.create => to create and save a new document (record) in the MongoDB database based on the Mongoose model Cart. It adheres to the blueprint or schema defined in the Cart model
-        user: req.user._id, //Sets the user field to the ID of the current user.
+        email: req.user.email, 
         items: [
-          //An array containing details of the added product (like productId, quantity, and subtotal).
           {
             product: productId,
-            quantity,
-            subtotal: parseFloat(product.price) * parseInt(quantity),
+            quantity: parseInt(quantity),
           },
         ],
-        total: parseFloat(product.price) * parseInt(quantity), //The total cost of all items in the cart.
       });
       await myCart.save(); //Since Mongoose operations are asynchronous, await is used to wait for the Cart.create operation to complete before proceeding with the next steps.
       return res.json({
@@ -48,26 +43,17 @@ router.post("/", auth, async (req, res) => {
 
       //if the "selected-similar-product" exists, we increase the quantity
       if (similarProductInCart) {
-        //add the quantity from the client to the quantity of the "selected-similar-product in the curr cart"
+        console.log(similarProductInCart.quantity); //1
         similarProductInCart.quantity += quantity;
-        //if the quantity of the "selected-similar-product in the curr cart" is more than the "selected-similar-product" from the database,..
+        console.log(similarProductInCart.quantity); //2
         if (similarProductInCart.quantity > product.quantity) {
           return res.json({ msg: "This product has sold out" });
         }
-        //UPDATE THE SUBTOTAL OF THE SIMILAR PRODUCT WE ARE NOW FOCUSING.
-        similarProductInCart.subtotal =
-          product.price * similarProductInCart.quantity;
-
-        //UPDATE THE CART TOTAL => by calculating the price of the product added and add to the cart total
-        cart.total += quantity * product.price;
       } else {
-        //if we're not adding another similar product, we're adding a different product. WE DON'T INCREASE QUANTITY, but we create a new object(sub-item) and push into the main items array
         cart.items.push({
           product: productId,
           quantity,
-          subtotal: product.price * quantity,
         });
-        cart.total += quantity * product.price;
       }
       await cart.save();
       return res.json({ msg: "Product added to cart successfully", cart });
@@ -113,12 +99,21 @@ router.delete("/:id", auth, async (req, res) => {
     //find the user's cart using the user's id
     const cart = await Cart.findOne({ user: req.user._id });
 
-    //create an array of items where each product is not same as the requested product.
-    //this means that the item in the cart in which it is same as the reqested product will be filtered out/ left out.
-    cart.items = cart.items.filter((item) => item.product._id != req.params.id);
+    let findDonut = cart.items.find(
+      (item) => item.product._id === req.params.id
+    );
 
-    //recalculate the total by summing up the subtotals of each item
-    cart.total = cart.items.reduce((total, item) => total + item.subtotal, 0);
+    if (findDonut.quantity > 1) {
+      cart.items.map((item) => {
+        if (item.product._id === findDonut._id) {
+          item.quantity -= 1;
+        }
+        return item;
+      });
+    } else {
+      cart.items.filter((item) => item.product._id != req.params.id);
+    }
+
     await cart.save();
     return res.json({ msg: "This item has successfully been removed", cart });
   } catch (e) {

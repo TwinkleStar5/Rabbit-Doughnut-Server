@@ -1,23 +1,18 @@
 const mongoose = require("mongoose");
 
 const CartSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  // type: mongoose.Types.ObjectId => This specifies that the user field is expected to be of type ObjectId, which is a 12-byte identifier typically assigned by MongoDB.
-  // ref: "User" =>This tells Mongoose that the user field is referencing the "User" model. It establishes a link or association between the "Cart" model and the "User" model.
-
-  //When you use mongoose.Types.ObjectId with ref to reference another Mongoose model, you're establishing a relationship between the documents in different collections.
-  //When you create a new document and save it to the MongoDB collection, if you don't explicitly provide a value for a field of type mongoose.Types.ObjectId, MongoDB will automatically generate a unique ObjectId for that field.
+  email: { type: mongoose.Schema.Types.String, ref: "Email" },
   items: [
     {
       product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
       // mongoose.Types.ObjectId: display the product's id and the product details exactly as in the Product blueprint(model)
       quantity: { type: Number, require: true }, //The quantity of this specific product in the cart
-      subtotal: { type: Number, require: true }, //The subtotal cost for the quantity of this specific product in the cart
+      //subtotal: { type: Number, require: true }, //The subtotal cost for the quantity of this specific product in the cart
       _id: false, //so this product when added to cart won't generate it's own id. we just want the product's id from the model, that's it. because By default, Mongoose automatically adds an _id field to every subdocument, creating a unique identifier for each subdocument within an array.
       //This means that each item in the "items" array will not have its own separate _id field. Instead, the uniqueness is determined by the combination of the fields within the subdocument ("product," "quantity," and "subtotal" )
     },
   ],
-  total: { type: Number }, //The GRAND TOTAL of all items in the cart
+  total: { type: Number }, 
 });
 
 module.exports = mongoose.model("Cart", CartSchema);

@@ -79,4 +79,27 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/generate", (req, res) => {
+  try {
+    jwt.sign(
+      { data: req.body },
+      SECRET_KEY,
+      { expiresIn: "24h" },
+      (err, token) => {
+        if (err) {
+          return json({
+            error: e.message,
+            msg: "Failed to generate token",
+            status: 400,
+          });
+        }
+        //if there's no error, It sends a JSON response with the generated token, information about the user (userFound), and a success message.
+        return res.json({ token });
+      }
+    );
+  } catch (e) {
+    return res.status(400).json({ msg: "Cannot generate token" });
+  }
+});
+
 module.exports = router;
