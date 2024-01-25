@@ -97,12 +97,13 @@ router.get("/", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   try {
     //find the user's cart using the user's id
-    const cart = await Cart.findOne({ user: req.user._id });
+    const cart = await Cart.findOne({ email: req.user.email });
 
     let findDonut = cart.items.find(
       (item) => item.product._id === req.params.id
-    );
+    ); //findDonut now holds the targeted product._id
 
+    //now we are accessing the targeted product._id's quantity
     if (findDonut.quantity > 1) {
       cart.items.map((item) => {
         if (item.product._id === findDonut._id) {
