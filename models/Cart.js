@@ -12,7 +12,18 @@ const CartSchema = new mongoose.Schema({
       //This means that each item in the "items" array will not have its own separate _id field. Instead, the uniqueness is determined by the combination of the fields within the subdocument ("product," "quantity," and "subtotal" )
     },
   ],
-  total: { type: Number }, 
+  mainCart: [
+    {
+      items: [
+        {
+          product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+          quantity: { type: Number, require: true },
+          _id: false,
+        },
+      ],
+    },
+  ],
+  total: { type: Number },
 });
 
 module.exports = mongoose.model("Cart", CartSchema);

@@ -19,13 +19,23 @@ router.post("/", auth, async (req, res) => {
 
     if (!cart) {
       const myCart = await Cart.create({
-        email: req.user.email, 
+        email: req.user.email,
         items: [
           {
             product: productId,
             quantity: parseInt(quantity),
           },
         ],
+        // mainCart: [
+        //   {
+        //     items: [
+        //       {
+        //         product: productId,
+        //         quantity: parseInt(quantity),
+        //       },
+        //     ],
+        //   },
+        // ],
       });
       await myCart.save(); //Since Mongoose operations are asynchronous, await is used to wait for the Cart.create operation to complete before proceeding with the next steps.
       return res.json({
@@ -99,20 +109,18 @@ router.delete("/:id", auth, async (req, res) => {
     //find the user's cart using the user's id
     const cart = await Cart.findOne({ email: req.user.email });
 
-    let findDonut = cart.items.find(
-      (item) => item.product._id === req.params.id
-    ); //findDonut now holds the targeted product._id
+    let findDonut = cart.items.find((item) => item.product == req.params.id); //findDonut now holds the targeted product._id
 
     //now we are accessing the targeted product._id's quantity
     if (findDonut.quantity > 1) {
       cart.items.map((item) => {
-        if (item.product._id === findDonut._id) {
+        if (item.product === findDonut.product) {
           item.quantity -= 1;
         }
         return item;
       });
     } else {
-      cart.items.filter((item) => item.product._id != req.params.id);
+      cart.items = cart.items.filter((item) => item.product != req.params.id);
     }
 
     await cart.save();
@@ -135,6 +143,23 @@ router.delete("/", auth, async (req, res) => {
     return res
       .status(400)
       .json({ error: e.message, msg: "Error in deleting the entire cart" });
+  }
+});
+
+router.put("/", auth, async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ email: req.user.email });
+    const toBePushed = {
+      items: [...cart.items],
+    };
+    cart.mainCart.push(toBePushed);
+    cart.items = [];
+    cart.save();
+    return res.json({ msg: "Cart added successfully" });
+  } catch (e) {
+    return res
+      .status(400)
+      .json({ error: e.message, msg: "Error in adding to cart" });
   }
 });
 
