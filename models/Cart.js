@@ -5,15 +5,14 @@ const CartSchema = new mongoose.Schema({
   items: [
     {
       product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-      // mongoose.Types.ObjectId: display the product's id and the product details exactly as in the Product blueprint(model)
-      quantity: { type: Number, require: true }, //The quantity of this specific product in the cart
-      //subtotal: { type: Number, require: true }, //The subtotal cost for the quantity of this specific product in the cart
-      _id: false, //so this product when added to cart won't generate it's own id. we just want the product's id from the model, that's it. because By default, Mongoose automatically adds an _id field to every subdocument, creating a unique identifier for each subdocument within an array.
-      //This means that each item in the "items" array will not have its own separate _id field. Instead, the uniqueness is determined by the combination of the fields within the subdocument ("product," "quantity," and "subtotal" )
+      quantity: { type: Number, require: true },
+      _id: false,
     },
   ],
   mainCart: [
     {
+      // _id: { type: mongoose.Schema.Types.ObjectId },
+      quantity: { type: Number, default: 1 },
       items: [
         {
           product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },

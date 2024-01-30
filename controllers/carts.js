@@ -26,16 +26,6 @@ router.post("/", auth, async (req, res) => {
             quantity: parseInt(quantity),
           },
         ],
-        // mainCart: [
-        //   {
-        //     items: [
-        //       {
-        //         product: productId,
-        //         quantity: parseInt(quantity),
-        //       },
-        //     ],
-        //   },
-        // ],
       });
       await myCart.save(); //Since Mongoose operations are asynchronous, await is used to wait for the Cart.create operation to complete before proceeding with the next steps.
       return res.json({
@@ -91,9 +81,9 @@ router.post("/", auth, async (req, res) => {
 router.get("/", auth, async (req, res) => {
   try {
     if (req.user.isAdmin) return res.json({ msg: "Customers only can shop" });
-    const cart = await Cart.findOne({ user: req.user._id }).populate(
-      "items.product"
-    );
+    const cart = await Cart.findOne({ user: req.user._id })
+      .populate("items.product")
+      .populate("mainCart.items.product");
     if (!cart) return res.json({ msg: "Cart is empty, please add some items" });
     return res.json(cart);
   } catch (e) {
@@ -132,6 +122,31 @@ router.delete("/:id", auth, async (req, res) => {
   }
 });
 
+router.delete("/main/:idx", auth, async (req, res) => {
+  try {
+    let idx = req.params.idx;
+    const userCart = await Cart.findOne({ email: req.user.email });
+    // const singleCartItem = await userCart.mainCart.find((item) => item == idx);
+
+    // const updatedUserCart = [...userCart]
+    // updatedUserCart.mainCart.splice(singleCartItem, 1);
+
+    userCart.mainCart.splice(idx, 1);
+
+    await userCart.save();
+    return res.json({ msg: "Cart item deleted successfully" });
+    // await updatedUserCart.mainCart.save();
+    // find the cart
+    // splice the mainCart base on the given index
+    // save the cart
+  } catch (e) {
+    return res.status(400).json({
+      error: e.message,
+      msg: "Error in removing this item from MAIN CART",
+    });
+  }
+});
+
 //DELETE WHOLE CART
 router.delete("/", auth, async (req, res) => {
   try {
@@ -146,6 +161,7 @@ router.delete("/", auth, async (req, res) => {
   }
 });
 
+//PUSH ITEMS INTO MAIN CART
 router.put("/", auth, async (req, res) => {
   try {
     const cart = await Cart.findOne({ email: req.user.email });
@@ -156,6 +172,26 @@ router.put("/", auth, async (req, res) => {
     cart.items = [];
     cart.save();
     return res.json({ msg: "Cart added successfully" });
+  } catch (e) {
+    return res
+      .status(400)
+      .json({ error: e.message, msg: "Error in adding to cart" });
+  }
+});
+
+router.put("/main/:idx", auth, async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ email: req.user.email });
+
+    console.log(cart);
+    if (cart.mainCart.quantity > 1) {
+      cart.mainCart.quantity -= 1;
+    } else {
+      cart.mainCart.quantity += 1;
+    }
+
+    cart.save();
+    return res.json({ msg: "Quantity updated successfully" });
   } catch (e) {
     return res
       .status(400)
