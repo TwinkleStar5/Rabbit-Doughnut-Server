@@ -5,21 +5,39 @@ const Order = require("../models/Order");
 const auth = require("../middleware/auth");
 const isAdmin = require("../middleware/isAdmin");
 
-//CREATE ORDER => find a cashier and empty your cart to make your payment
 router.post("/", auth, async (req, res) => {
+  console.log(req.user);
+  console.log(req.body);
+  return;
   try {
-    const cart = await Cart.findOne({ user: req.user._id });
+    const cart = await Cart.findOne({ email: req.user.email });
     if (!cart) return res.json({ msg: "You have no cart" });
 
-    //find a cashier => tell the cashier your id, all items you have, and the total price of your items
+    // let total = 0;
+    // console.log(cart);
+    // return;
+
     const myOrder = await Order.create({
-      user: req.user._id,
-      items: cart.items,
-      total: cart.total,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      phoneNumber: req.user.phoneNumber,
+      email: req.user.email,
+      pickUp: req.body.pickUp,
+      delivery: req.body.delivery,
+      emailUser: req.body.saveEmail,
+      purchased_date: req.body.purchased_date,
+      cart: req.body.cart,
+      country: req.body.country,
+      state: req.body.state,
+      company: req.body.company,
+      address: req.body.address,
+      city: req.body.city,
+      postalCode: req.body.postalCode,
+      grandTotal: req.body.grandTotal,
     });
 
-    await myOrder.save(); //the cashier is informed by you and agrees to be your service
-    await Cart.findByIdAndDelete(cart._id); //you empty your cart slowly to let the cashier continue the payment process
+    await myOrder.save();
+    await Cart.findByIdAndDelete(cart._id);
     return res.json({
       msg: "Cart has been emptied and order has been created",
       myOrder,

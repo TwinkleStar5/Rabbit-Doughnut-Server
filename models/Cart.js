@@ -11,7 +11,6 @@ const CartSchema = new mongoose.Schema({
   ],
   mainCart: [
     {
-      // _id: { type: mongoose.Schema.Types.ObjectId },
       quantity: { type: Number, default: 1 },
       items: [
         {
@@ -22,8 +21,8 @@ const CartSchema = new mongoose.Schema({
       ],
     },
   ],
-  total: { type: Number },
-});
+  deliveryPickUp_date: { type: Date, default: Date.now() },
+}); 
 
 module.exports = mongoose.model("Cart", CartSchema);
 
