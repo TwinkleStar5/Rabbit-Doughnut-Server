@@ -6,7 +6,6 @@ const auth = require("../middleware/auth");
 const isAdmin = require("../middleware/isAdmin");
 
 router.post("/", auth, async (req, res) => {
-  console.log(req.user);
   console.log(req.body);
   return;
   try {
@@ -18,16 +17,15 @@ router.post("/", auth, async (req, res) => {
     // return;
 
     const myOrder = await Order.create({
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      phoneNumber: req.user.phoneNumber,
-      email: req.user.email,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email,
       pickUp: req.body.pickUp,
       delivery: req.body.delivery,
-      emailUser: req.body.saveEmail,
+      emailNews: req.body.saveEmail,
       purchased_date: req.body.purchased_date,
       cart: req.body.cart,
-      country: req.body.country,
       state: req.body.state,
       company: req.body.company,
       address: req.body.address,

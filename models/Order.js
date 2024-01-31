@@ -7,7 +7,7 @@ const OrderSchema = new mongoose.Schema({
   email: { type: mongoose.Schema.Types.String, ref: "email" },
   pickUp: { type: Boolean },
   delivery: { type: Boolean },
-  emailUser: { type: Boolean},
+  emailNews: { type: Boolean},
   purchased_date: { type: Date, default: Date.now() },
   cart: [
     {
@@ -21,7 +21,6 @@ const OrderSchema = new mongoose.Schema({
       ],
     },
   ],
-  country: { type: mongoose.Schema.Types.String },
   state: { type: mongoose.Schema.Types.String },
   company: { type: mongoose.Schema.Types.String },
   address: { type: mongoose.Schema.Types.String },
