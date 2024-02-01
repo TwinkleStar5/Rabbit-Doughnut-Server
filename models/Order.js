@@ -7,7 +7,8 @@ const OrderSchema = new mongoose.Schema({
   email: { type: mongoose.Schema.Types.String, ref: "email" },
   pickUp: { type: Boolean },
   delivery: { type: Boolean },
-  emailNews: { type: Boolean},
+  collectDate: { type: Number },
+  emailNews: { type: Boolean },
   purchased_date: { type: Date, default: Date.now() },
   cart: [
     {
