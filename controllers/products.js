@@ -10,10 +10,9 @@ const path = require("path"); //allows you to change directories . for working w
 //ADD ITEMS
 router.post("/", auth, isAdmin, singleFileUpload, async (req, res) => {
   try {
-    let product = new Product(req.body); //create new product with the Product blueprint using the requests sent by the form body
-    if (req.file) product.image = req.file.filename; //Checks if there is a file (image) attached in the request. If yes, sets the product's image property to the filename of the uploaded image.
-    //4354364235435-apple.jpg => will look like this
-    await product.save(); //Saves the newly created product (with or without an image) to the database. The await keyword is used because saving to the database is an asynchronous operation.
+    let product = new Product(req.body); 
+    if (req.file) product.image = req.file.filename; 
+    await product.save(); 
     return res.json({ msg: "Product added successfully" });
   } catch (e) {
     return res.status(400).json({ error: e.message });

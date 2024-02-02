@@ -110,10 +110,6 @@ router.delete("/main/:idx", auth, async (req, res) => {
   try {
     let idx = req.params.idx;
     const userCart = await Cart.findOne({ email: req.user.email });
-    // const singleCartItem = await userCart.mainCart.find((item) => item == idx);
-
-    // const updatedUserCart = [...userCart]
-    // updatedUserCart.mainCart.splice(singleCartItem, 1);
 
     userCart.mainCart.splice(idx, 1);
 

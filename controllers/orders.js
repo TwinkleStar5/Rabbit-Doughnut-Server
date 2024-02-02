@@ -63,6 +63,7 @@ router.get("/", auth, async (req, res) => {
 router.get("/all", auth, isAdmin, async (req, res) => {
   try {
     const orders = await Order.find();
+
     if (!orders)
       return res.json({ msg: "No customers have ordered anything yet" });
 
