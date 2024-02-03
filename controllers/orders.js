@@ -5,9 +5,11 @@ const Order = require("../models/Order");
 const auth = require("../middleware/auth");
 const isAdmin = require("../middleware/isAdmin");
 
+//CREATE AN ORDER
 router.post("/", auth, async (req, res) => {
   try {
     const cart = await Cart.findOne({ email: req.user.email });
+    console.log(cart);
     if (!cart) return res.json({ msg: "You have no cart" });
 
     // let total = 0;
@@ -23,14 +25,14 @@ router.post("/", auth, async (req, res) => {
       delivery: req.body.mode === "Delivery",
       emailNews: req.body.saveEmail,
       purchased_date: req.body.purchased_date,
-      // collectDate: ,
+      collectDate: localStorage.getItem("selectedDate"),
       cart: cart.mainCart,
       state: req.body.state,
       company: req.body.company,
       address: req.body.address,
       city: req.body.city,
       postalCode: req.body.postalCode,
-      grandTotal: req.body.grandTotal,
+      grandTotal: req.body.total,
     });
 
     await myOrder.save();
@@ -76,7 +78,4 @@ router.get("/all", auth, isAdmin, async (req, res) => {
   }
 });
 
-//UPDATE ORDERS
-
-//DELETE ORDERS
 module.exports = router;

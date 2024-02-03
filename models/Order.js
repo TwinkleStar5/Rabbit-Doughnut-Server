@@ -1,4 +1,5 @@
 const mongoose = require("mongoose"); //import the mongoose library, which is a popular JavaScript library for MongoDB.
+const moment = require("moment");
 
 const OrderSchema = new mongoose.Schema({
   firstName: { type: mongoose.Schema.Types.String, ref: "firstName" },
@@ -9,7 +10,36 @@ const OrderSchema = new mongoose.Schema({
   delivery: { type: Boolean },
   collectDate: { type: Number },
   emailNews: { type: Boolean },
-  purchased_date: { type: Date, default: Date.now() },
+  purchased_date: {
+    type: Date,
+    default: Date.now,
+    get: function (val) {
+      return moment(val).format("lll");
+    },
+  },
+  // purchased_date: {
+  //   type: Date,
+  //   default: Date.now,
+  //   getters: true, // Enable getters for this field
+  //   get: (val) => {
+  //     if (!val) return val;
+
+  //     const date = new Date(val);
+  //     const gbDateStyle = date.toLocaleDateString("en-GB", {
+  //       day: "numeric",
+  //       month: "short",
+  //       year: "numeric",
+  //     });
+
+  //     const timeStyle = date.toLocaleTimeString("en-GB", {
+  //       hour: "numeric",
+  //       minute: "numeric",
+  //       hour12: true,
+  //     });
+
+  //     return `${gbDateStyle}, ${timeStyle}`;
+  //   },
+  // },
   cart: [
     {
       quantity: { type: Number },
