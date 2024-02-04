@@ -51,7 +51,7 @@ router.post("/", auth, async (req, res) => {
 //READ ALL ORDERS => as customer
 router.get("/", auth, async (req, res) => {
   try {
-    const order = await Order.findOne({ user: req.user._id });
+    const order = await Order.findOne({ email: req.user.email });
     if (!order) return res.json({ msg: "You have not created any orders" });
     return res.json(order);
   } catch (e) {
