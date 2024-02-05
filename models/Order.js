@@ -8,7 +8,8 @@ const OrderSchema = new mongoose.Schema({
   email: { type: mongoose.Schema.Types.String, ref: "email" },
   pickUp: { type: Boolean },
   delivery: { type: Boolean },
-  collectDate: { type: Number },
+  collectDate: { type: String },
+  time: { type: String },
   emailNews: { type: Boolean },
   purchased_date: {
     type: Date,

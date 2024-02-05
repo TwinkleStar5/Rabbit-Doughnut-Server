@@ -9,12 +9,10 @@ const isAdmin = require("../middleware/isAdmin");
 router.post("/", auth, async (req, res) => {
   try {
     const cart = await Cart.findOne({ email: req.user.email });
-    console.log(cart);
+    // console.log(cart);
     if (!cart) return res.json({ msg: "You have no cart" });
 
     // let total = 0;
-    // console.log(cart);
-    // return;
 
     const myOrder = await Order.create({
       firstName: req.body.firstName,
@@ -25,7 +23,8 @@ router.post("/", auth, async (req, res) => {
       delivery: req.body.mode === "Delivery",
       emailNews: req.body.saveEmail,
       purchased_date: req.body.purchased_date,
-      collectDate: localStorage.getItem("selectedDate"),
+      collectDate: req.body.pickUpDelivery,
+      time: req.body.time,
       cart: cart.mainCart,
       state: req.body.state,
       company: req.body.company,
