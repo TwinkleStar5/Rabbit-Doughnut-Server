@@ -9,6 +9,7 @@ const isAdmin = require("../middleware/isAdmin");
 router.post("/", auth, async (req, res) => {
   try {
     const cart = await Cart.findOne({ email: req.user.email });
+  
     // console.log(cart);
     if (!cart) return res.json({ msg: "You have no cart" });
 
@@ -18,7 +19,7 @@ router.post("/", auth, async (req, res) => {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
+      email: req.user.email,
       pickUp: req.body.mode === "Pick Up",
       delivery: req.body.mode === "Delivery",
       emailNews: req.body.saveEmail,
