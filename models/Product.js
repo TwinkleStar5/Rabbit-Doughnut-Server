@@ -7,10 +7,10 @@ const ProductSchema = new mongoose.Schema({
   allergens: { type: String, require: true },
   vegan: { type: Boolean, default: false },
   glutenFree: { type: Boolean, default: false },
+  isActive: { type: Boolean, require: true },
   ingredients: { type: String, require: true },
   quantity: { type: Number, require: true },
   image: { type: String, require: true },
-  isActive: { type: Boolean, require: true },
 });
 
 module.exports = mongoose.model("Product", ProductSchema);

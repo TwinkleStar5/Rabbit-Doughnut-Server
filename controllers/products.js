@@ -9,8 +9,8 @@ const path = require("path"); //allows you to change directories . for working w
 
 //ADD ITEMS
 router.post("/", auth, isAdmin, singleFileUpload, async (req, res) => {
- console.log(req.body);
-  return console.log(req.file);
+   console.log(req.body);
+    return console.log(req.file);
   try {
     let product = new Product(req.body);
     if (req.file) product.image = req.file.filename;
