@@ -4,7 +4,7 @@ const moment = require("moment");
 const OrderSchema = new mongoose.Schema({
   firstName: { type: mongoose.Schema.Types.String, ref: "firstName" },
   lastName: { type: mongoose.Schema.Types.String, ref: "firstName" },
-  phoneNumber: { type: Number, ref: "phoneNumber" },
+  phoneNumber: { type: String, ref: "phoneNumber" },
   email: { type: String, ref: "email" },
   pickUp: { type: Boolean },
   delivery: { type: Boolean },
@@ -59,6 +59,7 @@ const OrderSchema = new mongoose.Schema({
   city: { type: String },
   postalCode: { type: String },
   grandTotal: { type: Number },
+  status: { type: Boolean },
 });
 
 module.exports = mongoose.model("Order", OrderSchema);

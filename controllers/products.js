@@ -9,6 +9,8 @@ const path = require("path"); //allows you to change directories . for working w
 
 //ADD ITEMS
 router.post("/", auth, isAdmin, singleFileUpload, async (req, res) => {
+ console.log(req.body);
+  return console.log(req.file);
   try {
     let product = new Product(req.body);
     if (req.file) product.image = req.file.filename;
@@ -33,7 +35,6 @@ router.get("/", async (req, res) => {
 
 //GET ONE ITEM
 router.get("/:id", async (req, res) => {
- 
   try {
     let product = await Product.findById(req.params.id);
     if (!product) return res.json({ msg: "This product doesn't exist" });
@@ -80,6 +81,7 @@ router.put("/:id", auth, isAdmin, singleFileUpload, async (req, res) => {
 router.delete("/:id", auth, isAdmin, async (req, res) => {
   try {
     let product = await Product.findById(req.params.id);
+    return console.log("here");
     if (!product) return res.json({ msg: "This product does not exist" });
 
     if (product.image) {
