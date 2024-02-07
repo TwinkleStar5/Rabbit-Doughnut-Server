@@ -9,7 +9,7 @@ const isAdmin = require("../middleware/isAdmin");
 router.post("/", auth, async (req, res) => {
   try {
     const cart = await Cart.findOne({ email: req.user.email });
-  
+
     // console.log(cart);
     if (!cart) return res.json({ msg: "You have no cart" });
 
@@ -51,7 +51,7 @@ router.post("/", auth, async (req, res) => {
 //READ ALL ORDERS => as customer
 router.get("/", auth, async (req, res) => {
   try {
-    const order = await Order.findOne({ email: req.user.email });
+    const order = await Order.find({ email: req.user.email });
     if (!order) return res.json({ msg: "You have not created any orders" });
     return res.json(order);
   } catch (e) {
@@ -64,7 +64,10 @@ router.get("/", auth, async (req, res) => {
 //READ ALL ORDERS => as admin
 router.get("/all", auth, isAdmin, async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find().populate({
+      path: "cart.items",
+      populate: {path: "product"},
+    });
 
     if (!orders)
       return res.json({ msg: "No customers have ordered anything yet" });
