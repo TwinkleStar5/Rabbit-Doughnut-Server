@@ -12,30 +12,6 @@ const OrderSchema = new mongoose.Schema({
   time: { type: String },
   emailNews: { type: Boolean },
   purchased_date: { type: String },
-
-  // purchased_date: {
-  //   type: Date,
-  //   default: Date.now,
-  //   getters: true, // Enable getters for this field
-  //   get: (val) => {
-  //     if (!val) return val;
-
-  //     const date = new Date(val);
-  //     const gbDateStyle = date.toLocaleDateString("en-GB", {
-  //       day: "numeric",
-  //       month: "short",
-  //       year: "numeric",
-  //     });
-
-  //     const timeStyle = date.toLocaleTimeString("en-GB", {
-  //       hour: "numeric",
-  //       minute: "numeric",
-  //       hour12: true,
-  //     });
-
-  //     return `${gbDateStyle}, ${timeStyle}`;
-  //   },
-  // },
   cart: [
     {
       quantity: { type: Number },
