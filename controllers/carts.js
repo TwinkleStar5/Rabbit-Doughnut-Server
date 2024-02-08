@@ -123,19 +123,36 @@ router.delete("/main/:idx", auth, async (req, res) => {
   }
 });
 
-//DELETE WHOLE CART
+//DELETE CART.ITEMS
 router.delete("/", auth, async (req, res) => {
   try {
-    const cart = await Cart.findOne({ user: req.user._id });
-    if (!cart) return res.json({ msg: "Cart doesn't exist" });
-    await Cart.findOneAndDelete({ user: req.user._id });
-    return res.json({ msg: "Entire cart has been removed" });
+   const cart = await Cart.findOneAndUpdate(
+     { email: req.user.email },
+     { $unset: { items: "" } },
+     { new: true }
+   );
+
+   if (!cart) return res.json({ msg: "Cart doesn't exist" });
+    return res.json({ msg: "Cart.items has been removed" });
   } catch (e) {
     return res
       .status(400)
       .json({ error: e.message, msg: "Error in deleting the entire cart" });
   }
 });
+
+// router.delete("/", auth, async (req, res) => {
+//   try {
+//     const cart = await Cart.findOne({ user: req.user._id });
+//     if (!cart) return res.json({ msg: "Cart doesn't exist" });
+//     await Cart.findOneAndDelete({ user: req.user._id });
+//     return res.json({ msg: "Entire cart has been removed" });
+//   } catch (e) {
+//     return res
+//       .status(400)
+//       .json({ error: e.message, msg: "Error in deleting the entire cart" });
+//   }
+// });
 
 //PUSH ITEMS INTO MAIN CART
 router.put("/", auth, async (req, res) => {

@@ -91,7 +91,7 @@ router.delete("/:id", auth, isAdmin, async (req, res) => {
     }
 
     await Product.findByIdAndDelete(req.params.id);
-   
+
     return res.json({ msg: "Product successfully deleted" });
   } catch (e) {
     return res
@@ -101,5 +101,22 @@ router.delete("/:id", auth, isAdmin, async (req, res) => {
 });
 
 //ISACTIVE
+router.patch("/:id", auth, isAdmin, async (req, res) => {
+  return console.log('hi');
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.json({ msg: "Product does not exist" });
+    await Product.findOneAndUpdate(req.params.id, {
+      ...product,
+      status: !product.status,
+    });
+
+    return res.json({ msg: "Product's status successfully updated" });
+  } catch (e) {
+    return res
+      .status(400)
+      .json({ error: e.message, msg: "Unable to update product's status" });
+  }
+});
 
 module.exports = router;

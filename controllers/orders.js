@@ -33,6 +33,7 @@ router.post("/", auth, async (req, res) => {
       city: req.body.city,
       postalCode: req.body.postalCode,
       grandTotal: req.body.total,
+      status: false,
     });
 
     await myOrder.save();
@@ -51,7 +52,7 @@ router.post("/", auth, async (req, res) => {
 //READ ALL ORDERS => as customer
 router.get("/", auth, async (req, res) => {
   try {
-    const order = await Order.find({ email: req.user.email });
+    const order = await Order.findOne({ email: req.user.email });
     if (!order) return res.json({ msg: "You have not created any orders" });
     return res.json(order);
   } catch (e) {
@@ -66,7 +67,7 @@ router.get("/all", auth, isAdmin, async (req, res) => {
   try {
     const orders = await Order.find().populate({
       path: "cart.items",
-      populate: {path: "product"},
+      populate: { path: "product" },
     });
 
     if (!orders)
@@ -81,4 +82,24 @@ router.get("/all", auth, isAdmin, async (req, res) => {
   }
 });
 
+router.patch("/:id", auth, isAdmin, async (req, res) => {
+  // return console.log("hi orders controller");
+  // return console.log(req.params.id);   //i got [object Object]. NAZE??!!
+  try {
+    // return console.log(req.params.id);
+    // const orderId = req.params.id;
+    const order = await Order.findById(req.params.id);
+    // return console.log(order);
+    if (!order) return res.json({ msg: "This order does not exist" });
+    order.status = !order.status;
+
+    await order.save();
+    return res.json({ msg: "Order status has been updated" });
+  } catch (e) {
+    return res.status(400).json({
+      error: e.message,
+      msg: "Error in updating client's order status",
+    });
+  }
+});
 module.exports = router;
