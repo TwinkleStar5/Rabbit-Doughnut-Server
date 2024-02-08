@@ -11,13 +11,13 @@ const OrderSchema = new mongoose.Schema({
   collectDate: { type: String },
   time: { type: String },
   emailNews: { type: Boolean },
-  purchased_date: { type: String },
+  purchased_date: { type: Date, default: Date.now() },
   cart: [
     {
       quantity: { type: Number },
       items: [
         {
-          product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" }, //['2']['2']['2']
+          product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
           quantity: { type: Number, required: true },
           _id: false,
         },
